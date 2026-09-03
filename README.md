@@ -1,10 +1,10 @@
 # JUDO-Wasseraufbereitung-i-soft-PRO-HomeAssistant-Integration-
 Dies ist die Integration für den i-soft PRO der Firma JUDO Wasseraufbereitung
-================================================================================
+
           JUDO i-soft PRO / PRO L - Home Assistant Integration
                      Dokumentation & Einrichtungsanleitung
                             für TCP Verschlüsselung 
-================================================================================
+
 
 WICHTIGER HINWEIS:
 ------------------
@@ -12,9 +12,9 @@ Diese Dokumentation beschreibt die bereitgestellte Home-Assistant-Konfiguration
 für die lokale Einbindung einer JUDO i-soft PRO / PRO L über die REST-Schnittstelle.
 Diese Integration befindet sich noch in der Testphase!!!
 
-================================================================================
+
 1. LIEFERUMFANG & DATEIÜBERSICHT
-================================================================================
+
 
 Für die vollständige Einrichtung werden folgende Dateien benötigt:
 
@@ -33,9 +33,8 @@ dürfen nicht überschrieben oder gelöscht werden! Der Inhalt dieser Datei muss
 dann dort hinzugefügt werden.
 
 
-================================================================================
 2. VORBEREITUNGEN an dem i-soft PRO / PRO L
-================================================================================
+
 
    Man muss bei dem i-soft PRO /PRO L die Rest-API Aktivieren. Das geht wie folgt,
    im Hauptmenü auf Konnektivität klicken. Dann werden Sie in ein weiteres Menü
@@ -50,9 +49,8 @@ dann dort hinzugefügt werden.
    mit der Taste OK bestätigen und Speichern.
    
 
-================================================================================
 3. VORAUSSETZUNGEN
-================================================================================
+
 
   [x] JUDO i-soft PRO oder i-soft PRO L
   [x] Lauffähige Home Assistant Installation
@@ -64,9 +62,8 @@ dann dort hinzugefügt werden.
     i-soft PRO IP-Adresse: 192.168.2.38
 
 
-================================================================================
 4. CONFIGURATION.YAML EINRICHTEN
-================================================================================
+
 
 Die bestehende configuration.yaml darf NICHT vollständig ersetzt werden. 
 Fügen Sie die folgenden Strukturen in Ihre vorhandene Datei ein bzw. ergänzen
@@ -102,9 +99,9 @@ HINWEIS: Achten Sie darauf, dass `default_config:` nicht versehentlich entfernt
 wird, da dies grundlegende Home-Assistant-Funktionen bereitstellt.
 
 
-================================================================================
+
 5. ZENTRALE IP-ADRESSE KONFIGURIEREN
-================================================================================
+
 
 Die IP-Adresse des i-soft-Geräts wird zentral über den Home-Assistant-Helper 
 `input_text.isoft_ip` verwaltet.
@@ -120,9 +117,9 @@ Vorteil: Die Dateien `rest.yaml` und `rest_commands.yaml` greifen automatisch au
 diesen Helper zu. Es ist nicht nötig, jede einzelne REST-URL manuell anzupassen.
 
 
-================================================================================
+
 6. REST-API-SCHNITTSTELLE & COMMANDS
-================================================================================
+
 
 - rest.yaml: 
   Enthält Abfragen zum fortlaufenden Auslesen der Gerätedaten.
@@ -133,9 +130,8 @@ Beide Dateien nutzen dynamisch die zentrale IP-Adresse über Pfade wie:
   http://<IP-Adresse>/api/rest/...   (z. B. http://192.168.2.38/api/rest/5100)
 
 
-================================================================================
 7. ISOFT_PRO_CONTROL_PACKAGE.YAML
-================================================================================
+
 
 Speichern Sie diese Datei im Unterordner `/config/packages/`. Sie stellt folgende
 Funktionen und Steuerungen zur Verfügung:
@@ -149,9 +145,9 @@ Funktionen und Steuerungen zur Verfügung:
   - Leckageschutz öffnen / schließen
 
 
-================================================================================
+
 8. CUSTOMIZE.YAML
-================================================================================
+
 
 Die `customize.yaml` ordnet die folgenden Sensoren und Entitäten sauber dem 
 Gerät "i-soft PRO" in der Home-Assistant-Benutzeroberfläche zu:
@@ -163,9 +159,8 @@ Gerät "i-soft PRO" in der Home-Assistant-Benutzeroberfläche zu:
   - Gesamtwassermenge & Weichwassermenge
 
 
-================================================================================
 9. DASHBOARD EINRICHTEN (LOVELACE)
-================================================================================
+
 
 Die Datei `Dashboard.yaml` bietet eine vorgefertigte Benutzeroberfläche mit 
 Bereichen für:
@@ -189,10 +184,8 @@ Schritte zum manuellen Einfügen (Raw-Konfigurationseditor):
            icon: mdi:water-softener
   6. Speichern und Seite neu laden.
 
-
-================================================================================
 10. DATEISTRUKTUR IN HOME ASSISTANT
-================================================================================
+
 
 Eine typische Verzeichnisstruktur sieht wie folgt aus:
 
@@ -206,9 +199,9 @@ Eine typische Verzeichnisstruktur sieht wie folgt aus:
     └── isoft_pro_control_package.yaml
 
 
-================================================================================
+
 11. ERSTE SCHRITTE & INBETRIEBNAHME
-================================================================================
+
 
   1. Korrekte IP-Adresse in `configuration.yaml` prüfen.
   2. Prüfen, ob alle `!include`-Pfade zur Dateistruktur passen.
@@ -220,9 +213,9 @@ Eine typische Verzeichnisstruktur sieht wie folgt aus:
   8. Erst nach erfolgreicher Datenanzeige erste Steuerbefehle testen.
 
 
-================================================================================
+
 12. FEHLERBEHEBUNG (TROUBLESHOOTING)
-================================================================================
+
 
 Keine Werte vom Gerät?
   - Ist die IP-Adresse korrekt und im Netzwerk erreichbar (Ping test)?
@@ -241,9 +234,8 @@ Dashboard zeigt Fehler / Entitäten fehlen?
   - Namen der Skripte und Entitäten abgleichen.
 
 
-================================================================================
 13. HINWEISE ZUM HERSTELLER & IMPRESSUM
-================================================================================
+
 
   Herstellerbezug: JUDO Wasseraufbereitung GmbH
   Produkt:         JUDO i-soft PRO / PRO L
@@ -254,4 +246,4 @@ Dashboard zeigt Fehler / Entitäten fehlen?
   Hinweis: Diese Datei dient als technische Dokumentation für Anwender der 
   Home-Assistant-Integration. Es ist eine offizielle Herstellerspezifikation 
   der JUDO Wasseraufbereitung GmbH.
-================================================================================
+
