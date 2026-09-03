@@ -59,7 +59,7 @@ dann dort hinzugefügt werden.
   [x] Lokale IP-Adresse des i-soft Geräts (muss von HA erreichbar sein)
 
   Beispiel:
-    i-soft PRO IP-Adresse: 192.168.2.38
+    i-soft PRO IP-Adresse: 192.168.176.255
 
 
 4. CONFIGURATION.YAML EINRICHTEN
@@ -75,7 +75,7 @@ default_config:
 input_text:
   isoft_ip:
     name: i-soft IP-Adresse
-    initial: "192.168.2.38"
+    initial: "192.168.176.255"
     min: 7
     max: 15
     mode: text
@@ -111,7 +111,7 @@ IP-Adresse ändern:
   unter `initial` in der `configuration.yaml` (oder via HA-Entität) an:
 
   Beispiel:
-    initial: "192.168.2.50"
+    initial: "192.168.176.255"
 
 Vorteil: Die Dateien `rest.yaml` und `rest_commands.yaml` greifen automatisch auf 
 diesen Helper zu. Es ist nicht nötig, jede einzelne REST-URL manuell anzupassen.
@@ -127,7 +127,7 @@ diesen Helper zu. Es ist nicht nötig, jede einzelne REST-URL manuell anzupassen
   Enthält die Steuerbefehle zum Schreiben / Ausführen von Aktionen am Gerät.
 
 Beide Dateien nutzen dynamisch die zentrale IP-Adresse über Pfade wie:
-  http://<IP-Adresse>/api/rest/...   (z. B. http://192.168.2.38/api/rest/5100)
+  http://<IP-Adresse>/api/rest/...   (z. B. http://192.168.176.255/api/rest/5100)
 
 
 7. ISOFT_PRO_CONTROL_PACKAGE.YAML
