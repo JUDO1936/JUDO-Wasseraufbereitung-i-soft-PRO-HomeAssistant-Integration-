@@ -1,0 +1,89 @@
+# ========================================================
+# i-soft PRO / L REST API - Schreibbefehle (POST / Basic)
+# ========================================================
+
+isoft_regeneration_starten:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/350000"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_wunschwasserhaerte_setzen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/3000{{ '%02X' | format(haerte | int) }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_szene_aktivieren:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/3600{{ '%02X' | format(szene | int) }}{{ dauer_hex | upper }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_szene_zuruecksetzen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/3800{{ '%02X' | format(szene | int) }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_salzmangel_warnung_setzen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/5700{{ '%02X' | format(tage | int) }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_haerteeinheit_setzen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/2400{{ '%02X' | format(einheit_id | int) }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_leckageschutz_schliessen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/3C00"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_leckageschutz_oeffnen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/3D00"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_max_entnahmedauer_setzen:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/3E00{{ '%02X' | format(minuten | int) }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_max_entnahmemenge_setzen:
+  url: >-
+    http://{{ states('input_text.isoft_ip') }}/api/rest/3F00{{ '%02X' | format((liter | int) % 256) }}{{ '%02X' | format((liter | int) // 256) }}
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_max_volumenstrom_setzen:
+  url: >-
+    http://{{ states('input_text.isoft_ip') }}/api/rest/4000{{ '%02X' | format((liter_pro_stunde | int) % 256) }}{{ '%02X' | format((liter_pro_stunde | int) // 256) }}
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"
+
+isoft_urlaubsmodus_starten:
+  url: "http://{{ states('input_text.isoft_ip') }}/api/rest/410001{{ '%02X' | format(tage | int) }}"
+  method: POST
+  authentication: basic
+  username: "admin"
+  password: "Connectivity"

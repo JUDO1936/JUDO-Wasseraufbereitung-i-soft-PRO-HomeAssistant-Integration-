@@ -1,0 +1,162 @@
+views:
+  - title: i-soft PRO
+    path: isoft-pro
+    icon: mdi:water-softener
+    cards:
+      - type: entities
+        title: Anlage & Infodaten
+        icon: mdi:information-outline
+        show_header_toggle: false
+        entities:
+          - entity: sensor.i_soft_pro_status_2
+            name: Status
+            icon: mdi:water-softener
+          - entity: sensor.i_soft_geraetetyp_hex
+            name: Gerätetyp
+            icon: mdi:chip
+          - entity: sensor.i_soft_firmware_version
+            name: Firmware Version
+            icon: mdi:numeric
+          - entity: sensor.i_soft_inbetriebnahmedatum
+            name: Inbetriebnahmedatum
+            icon: mdi:calendar-check
+      - type: entities
+        title: Szenen & Regeneration
+        icon: mdi:palette
+        entities:
+          - entity: input_select.isoft_szene_auswahl
+            name: Szene
+          - entity: input_select.isoft_szene_dauer_auswahl
+            name: Dauer
+          - type: call-service
+            name: Szene aktivieren
+            icon: mdi:play-circle
+            action_name: Starten
+            service: script.isoft_activate_scene_ui
+          - type: call-service
+            name: Szene zurücksetzen
+            icon: mdi:restore
+            action_name: Zurücksetzen
+            service: script.isoft_reset_scene_ui
+          - type: section
+          - type: call-service
+            name: Manuelle Regeneration
+            icon: mdi:autorenew
+            action_name: Starten
+            service: script.isoft_start_regeneration_ui
+      - type: entities
+        title: Leckageschutz & Urlaubsmodus
+        icon: mdi:shield-water
+        entities:
+          - type: call-service
+            name: Leckageschutz schließen
+            icon: mdi:valve-closed
+            action_name: Schließen
+            service: script.isoft_leak_close_ui
+          - type: call-service
+            name: Leckageschutz öffnen
+            icon: mdi:valve-open
+            action_name: Öffnen
+            service: script.isoft_leak_open_ui
+          - type: section
+          - entity: input_number.isoft_urlaubsmodus_tage
+            name: Urlaubstage
+          - type: call-service
+            name: Urlaubsmodus starten
+            icon: mdi:beach
+            action_name: Aktivieren
+            service: script.isoft_start_holiday_ui
+      - type: entities
+        title: Wasserhärte Einstellungen
+        icon: mdi:water-percent
+        entities:
+          - entity: input_number.isoft_wunschwasserhaerte_eingabe
+            name: Wunschwasserhärte
+          - entity: sensor.i_soft_wunschwasserhaerte
+            name: Aktuell am Gerät
+          - type: call-service
+            name: Wunschwasserhärte übernehmen
+            icon: mdi:water-opacity
+            action_name: Senden
+            service: script.isoft_set_wunschwasserhaerte_ui
+          - type: section
+          - entity: input_select.isoft_haerteeinheit_auswahl
+            name: Einheiten-Auswahl
+          - entity: sensor.i_soft_haerteeinheit
+            name: Aktuelle Einheit am Gerät
+          - type: call-service
+            name: Härteeinheit übernehmen
+            icon: mdi:hammer-wrench
+            action_name: Senden
+            service: script.isoft_set_haerteeinheit_ui
+      - type: entities
+        title: Grenzwerte - Leckageschutz
+        icon: mdi:shield-alert
+        entities:
+          - entity: input_select.isoft_entnahmedauer_auswahl
+            name: Max. Entnahmedauer
+          - entity: sensor.i_soft_max_entnahmedauer
+            name: Gerät - Entnahmedauer
+          - type: call-service
+            name: Entnahmedauer übernehmen
+            icon: mdi:timer-cog
+            action_name: Senden
+            service: script.isoft_set_max_duration_ui
+          - type: section
+          - entity: input_number.isoft_max_entnahmemenge_eingabe
+            name: Max. Entnahmemenge
+          - entity: sensor.i_soft_max_entnahmemenge
+            name: Gerät - Entnahmemenge
+          - type: call-service
+            name: Entnahmemenge übernehmen
+            icon: mdi:water-minus
+            action_name: Senden
+            service: script.isoft_set_max_volume_ui
+          - type: section
+          - entity: input_number.isoft_max_volumenstrom_eingabe
+            name: Max. Volumenstrom
+          - entity: sensor.i_soft_max_volumenstrom
+            name: Gerät - Volumenstrom
+          - type: call-service
+            name: Volumenstrom übernehmen
+            icon: mdi:speedometer
+            action_name: Senden
+            service: script.isoft_set_max_flow_ui
+      - type: entities
+        title: Salzvorrat & Warnschwelle
+        icon: mdi:salt-shaker
+        show_header_toggle: false
+        entities:
+          - entity: sensor.i_soft_salzgewicht
+            name: Salzvorrat
+          - entity: sensor.i_soft_salzreichweite
+            name: Reichweite
+          - entity: sensor.i_soft_salz_mangelwarnung_schwelle
+            name: Gerät - Warnschwelle
+          - type: section
+          - entity: input_number.isoft_salzmangel_warnung_eingabe
+            name: Warnung ab (Tage)
+          - type: call-service
+            name: Salzwarnungs-Timer setzen
+            icon: mdi:alert-circle-outline
+            action_name: Senden
+            service: script.isoft_set_salt_warning_ui
+      - type: entities
+        title: Wasser & Verbrauch
+        icon: mdi:water
+        entities:
+          - entity: sensor.i_soft_gesamtwassermenge
+            name: Gesamtwassermenge
+          - entity: sensor.i_soft_weichwassermenge
+            name: Weichwassermenge
+      - type: history-graph
+        entities:
+          - entity: sensor.i_soft_gesamtwassermenge
+            name: Gesamtwassermenge
+          - entity: sensor.i_soft_weichwassermenge
+            name: Weichwassermenge
+        title: Verlauf Gesamtwasserverbrauch (7 Tage)
+        hours_to_show: 168
+        show_names: true
+        logarithmic_scale: false
+        expand_legend: false

@@ -1,0 +1,89 @@
+# 1. Wunschwasserhärte setzen
+judo_set_wunschwasserhaerte:
+  alias: "JUDO - Wunschwasserhärte setzen"
+  mode: single
+  fields:
+    haerte:
+      description: "Wunschhärte in °dH (z. B. 6)"
+      example: 6
+  sequence:
+    - service: rest_command.isoft_wunschwasserhaerte_setzen
+      data:
+        haerte: "{{ haerte }}"
+    - delay:
+        seconds: 2
+    - service: homeassistant.update_entity
+      target:
+        entity_id: sensor.i_soft_wunschwasserhaerte
+
+# 2. Härtemesseinheit setzen
+judo_set_haertemesseinheit:
+  alias: "JUDO - Härtemesseinheit setzen"
+  mode: single
+  fields:
+    einheit_id:
+      description: "Einheits-ID (0=°dH, 1=°eH, 2=°fH, 3=gpg, 4=ppm, 5=mmol, 6=mval)"
+      example: 0
+  sequence:
+    - service: rest_command.isoft_haerteeinheit_setzen
+      data:
+        einheit_id: "{{ einheit_id }}"
+    - delay:
+        seconds: 2
+    - service: homeassistant.update_entity
+      target:
+        entity_id: sensor.i_soft_haerteeinheit
+
+# 3. Leckageschutz: Max Entnahmedauer
+judo_set_max_entnahmedauer:
+  alias: "JUDO - Max Entnahmedauer setzen"
+  mode: single
+  fields:
+    minuten:
+      description: "Maximale Entnahmedauer in Minuten (0-255)"
+      example: 60
+  sequence:
+    - service: rest_command.isoft_max_entnahmedauer_setzen
+      data:
+        minuten: "{{ minuten }}"
+    - delay:
+        seconds: 2
+    - service: homeassistant.update_entity
+      target:
+        entity_id: sensor.i_soft_max_entnahmedauer
+
+# 4. Leckageschutz: Max Entnahmemenge
+judo_set_max_entnahmemenge:
+  alias: "JUDO - Max Entnahmemenge setzen"
+  mode: single
+  fields:
+    liter:
+      description: "Maximale Entnahmemenge in Litern"
+      example: 500
+  sequence:
+    - service: rest_command.isoft_max_entnahmemenge_setzen
+      data:
+        liter: "{{ liter }}"
+    - delay:
+        seconds: 2
+    - service: homeassistant.update_entity
+      target:
+        entity_id: sensor.i_soft_max_entnahmemenge
+
+# 5. Leckageschutz: Max Volumenstrom
+judo_set_max_volumenstrom:
+  alias: "JUDO - Max Volumenstrom setzen"
+  mode: single
+  fields:
+    liter_pro_stunde:
+      description: "Maximaler Volumenstrom in Liter pro Stunde"
+      example: 2000
+  sequence:
+    - service: rest_command.isoft_max_volumenstrom_setzen
+      data:
+        liter_pro_stunde: "{{ liter_pro_stunde }}"
+    - delay:
+        seconds: 2
+    - service: homeassistant.update_entity
+      target:
+        entity_id: sensor.i_soft_max_volumenstrom
