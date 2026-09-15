@@ -7,7 +7,7 @@
 - resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5100" # Wunschwasserhaerte lesen
   username: "admin"
   password: "Connectivity"
-  scan_interval: 60
+  scan_interval: 180
   sensor:
     - name: "i-soft Wunschwasserhaerte"
       unique_id: isoft_wunschwasserhaerte
@@ -24,7 +24,7 @@
 - resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2300" # Haerteeinheit lesen
   username: "admin"
   password: "Connectivity"
-  scan_interval: 60
+  scan_interval: 180
   sensor:
     - name: "i-soft Haerteeinheit"
       unique_id: isoft_haerteeinheit
@@ -41,7 +41,7 @@
 - resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5700" # Salzreichweitenmangelwarnung lesen
   username: "admin"
   password: "Connectivity"
-  scan_interval: 60
+  scan_interval: 180
   sensor:
     - name: "i-soft Salzmangel Warnschwelle"
       unique_id: isoft_salzmangel_warnschwelle
@@ -59,7 +59,7 @@
 - resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5600" # Salzvorrat & Reichweite lesen
   username: "admin"
   password: "Connectivity"
-  scan_interval: 60
+  scan_interval: 180
   sensor:
     - name: "i-soft Salzgewicht"
       unique_id: isoft_salzgewicht
