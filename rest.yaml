@@ -88,7 +88,7 @@
 - resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2800" # Gesamtwassermenge
   username: "admin"
   password: "Connectivity"
-  scan_interval: 180
+  scan_interval: 600
   sensor:
     - name: "i-soft Gesamtwassermenge"
       unique_id: isoft_gesamtwassermenge
@@ -108,7 +108,7 @@
 - resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2900" # Weichwassermenge
   username: "admin"
   password: "Connectivity"
-  scan_interval: 180
+  scan_interval: 600
   sensor:
     - name: "i-soft Weichwassermenge"
       unique_id: isoft_weichwassermenge
