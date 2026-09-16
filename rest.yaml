@@ -1,0 +1,499 @@
+# ==========================================
+# i-soft PRO / L REST API - Alle Sensoren (Lesen)
+# IP wird zentral über input_text.isoft_ip gesetzt.
+# ==========================================
+
+# --- 1. Einstellungen & Grenzwerte ---
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5100" # Wunschwasserhaerte lesen
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 60
+  sensor:
+    - name: "i-soft Wunschwasserhaerte"
+      unique_id: isoft_wunschwasserhaerte
+      icon: mdi:water-softener
+      unit_of_measurement: "°dH"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_wunschwasserhaerte') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2300" # Haerteeinheit lesen
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 60
+  sensor:
+    - name: "i-soft Haerteeinheit"
+      unique_id: isoft_haerteeinheit
+      icon: mdi:format-letter-case
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set units = ['°dH', '°eH', '°fH', 'gpg', 'ppm', 'mmol', 'mval'] %}
+          {% set idx = value_json.data[0:2] | int(base=16) %}
+          {{ units[idx] if idx < units | length else 'Unbekannt' }}
+        {% else %}
+          {{ states('sensor.isoft_haerteeinheit') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5700" # Salzreichweitenmangelwarnung lesen
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 60
+  sensor:
+    - name: "i-soft Salzmangel Warnschwelle"
+      unique_id: isoft_salzmangel_warnschwelle
+      icon: mdi:alert-circle-outline
+      unit_of_measurement: "Tage"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {{ value_json.data[0:2] | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_salzmangel_warnschwelle') }}
+        {% endif %}
+
+
+# --- 2. Salz & Verbrauch ---
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5600" # Salzvorrat & Reichweite lesen
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 60
+  sensor:
+    - name: "i-soft Salzgewicht"
+      unique_id: isoft_salzgewicht
+      icon: mdi:salt-shaker
+      unit_of_measurement: "kg"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined and value_json.data | length >= 8 %}
+          {% set hex = value_json.data %}
+          {% set weight_g = (hex[2:4] ~ hex[0:2]) | int(base=16) %}
+          {{ (weight_g / 1000) | round(2) }}
+        {% else %}
+          {{ states('sensor.isoft_salzgewicht') }}
+        {% endif %}
+    - name: "i-soft Salzreichweite"
+      unique_id: isoft_salzreichweite
+      icon: mdi:calendar-clock
+      unit_of_measurement: "Tage"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined and value_json.data | length >= 8 %}
+          {% set hex = value_json.data %}
+          {{ (hex[6:8] ~ hex[4:6]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_salzreichweite') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2800" # Gesamtwassermenge
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 180
+  sensor:
+    - name: "i-soft Gesamtwassermenge"
+      unique_id: isoft_gesamtwassermenge
+      icon: mdi:water-pump
+      unit_of_measurement: "m³"
+      device_class: water
+      state_class: total_increasing
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {% set liters = (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) %}
+          {{ (liters / 1000) | round(3) }}
+        {% else %}
+          {{ states('sensor.isoft_gesamtwassermenge') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2900" # Weichwassermenge
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 180
+  sensor:
+    - name: "i-soft Weichwassermenge"
+      unique_id: isoft_weichwassermenge
+      icon: mdi:water-check
+      unit_of_measurement: "m³"
+      device_class: water
+      state_class: total_increasing
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {% set liters = (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) %}
+          {{ (liters / 1000) | round(3) }}
+        {% else %}
+          {{ states('sensor.isoft_weichwassermenge') }}
+        {% endif %}
+
+
+# --- 3. Leckageschutz & Überwachung ---
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/3E00" # Max. Entnahmedauer
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Max Entnahmedauer"
+      unique_id: isoft_max_entnahmedauer
+      icon: mdi:timer-outline
+      unit_of_measurement: "min"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {{ value_json.data[0:2] | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_max_entnahmedauer') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/3F00" # Max. Entnahmemenge
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Max Entnahmemenge"
+      unique_id: isoft_max_entnahmemenge
+      icon: mdi:water-minus
+      unit_of_measurement: "L"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_max_entnahmemenge') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/4000" # Max. Volumenstrom
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Max Volumenstrom"
+      unique_id: isoft_max_volumenstrom
+      icon: mdi:speedometer
+      unit_of_measurement: "L/h"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_max_volumenstrom') }}
+        {% endif %}
+
+
+# --- 4. Geräte- & Infodaten ---
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/FF00" # Gerätetyp
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 86400
+  sensor:
+    - name: "i-soft Geraetetyp"
+      unique_id: isoft_geraetetyp
+      icon: mdi:chip
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set typ = value_json.data[0:2] | upper %}
+          {% if typ in ['58', '4B'] %}
+            i-soft PRO
+          {% elif typ == '4C' %}
+            i-soft PRO L
+          {% else %}
+            {{ typ }}
+          {% endif %}
+        {% else %}
+          {{ states('sensor.isoft_geraetetyp') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/0600" # Gerätenummer laut API-Doku
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 86400
+  sensor:
+    - name: "i-soft Gerätenummer"
+      unique_id: isoft_geraetenummer
+      icon: mdi:identifier
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {% if hex | length >= 8 %}
+            {{ (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) }}
+          {% else %}
+            {{ states('sensor.isoft_geraetenummer') }}
+          {% endif %}
+        {% else %}
+          {{ states('sensor.isoft_geraetenummer') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/0100" # Firmware Version
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 86400
+  sensor:
+    - name: "i-soft Firmware Version"
+      unique_id: isoft_firmware_version
+      icon: mdi:file-code-outline
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined and value_json.data | length >= 6 %}
+          {% set hex = value_json.data %}
+          {# Die Doku zeigt 0C0001 als Version 1.0.12: Byte-Reihenfolge ist daher rückwärts. #}
+          {{ (hex[4:6]|int(base=16)) ~ '.' ~ (hex[2:4]|int(base=16)) ~ '.' ~ (hex[0:2]|int(base=16)) }}
+        {% else %}
+          {{ states('sensor.isoft_firmware_version') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/2500" # Betriebstage
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 3600
+  sensor:
+    - name: "i-soft Betriebstage"
+      unique_id: isoft_betriebstage
+      icon: mdi:clock-outline
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined and value_json.data | length >= 8 %}
+          {% set hex = value_json.data %}
+          {% set minutes = hex[0:2] | int(base=16) %}
+          {% set hours = hex[2:4] | int(base=16) %}
+          {% set days = (hex[4:8]) | int(base=16) %}
+          {{ days }} Tage, {{ hours }} Stunden
+        {% else %}
+          {{ states('sensor.isoft_betriebstage') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/0E00" # Inbetriebnahmedatum
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 86400
+  sensor:
+    - name: "i-soft Inbetriebnahmedatum"
+      unique_id: isoft_inbetriebnahme
+      icon: mdi:calendar-start
+      device_class: date
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined and value_json.data | length >= 8 %}
+          {% set hex = value_json.data %}
+          {% set day = hex[0:2] | int(base=16) %}
+          {% set month = hex[2:4] | int(base=16) %}
+          {% set year = (hex[4:8] | int(base=16)) %}
+          {{ '%04d-%02d-%02d' | format(year, month, day) }}
+        {% else %}
+          {{ states('sensor.isoft_inbetriebnahme') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/5800" # Kundendienst Telefon
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 86400
+  sensor:
+    - name: "i-soft Kundendienst Telefon"
+      unique_id: isoft_kd_telefon
+      icon: mdi:phone-outline
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {{ value_json.data }}
+        {% else %}
+          {{ states('sensor.isoft_kd_telefon') }}
+        {% endif %}
+
+
+# --- 5. Statistiken (Wasser, Volumenstrom, Salz) ---
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/FB00"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Wasserverbrauch Tag"
+      unique_id: isoft_wasser_tag
+      icon: mdi:chart-bar
+      unit_of_measurement: "L"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_wasser_tag') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/FC00"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Wasserverbrauch Woche"
+      unique_id: isoft_wasser_woche
+      icon: mdi:chart-bar
+      unit_of_measurement: "L"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_wasser_woche') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/FD00"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Wasserverbrauch Monat"
+      unique_id: isoft_wasser_monat
+      icon: mdi:chart-bar
+      unit_of_measurement: "L"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_wasser_monat') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/FE00"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Wasserverbrauch Jahr"
+      unique_id: isoft_wasser_jahr
+      icon: mdi:chart-bar
+      unit_of_measurement: "L"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[6:8] ~ hex[4:6] ~ hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_wasser_jahr') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F700"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Volumenstrom Tag"
+      unique_id: isoft_volumen_tag
+      icon: mdi:chart-line
+      unit_of_measurement: "L/h"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_volumen_tag') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F800"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Volumenstrom Woche"
+      unique_id: isoft_volumen_woche
+      icon: mdi:chart-line
+      unit_of_measurement: "L/h"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_volumen_woche') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F900"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Volumenstrom Monat"
+      unique_id: isoft_volumen_monat
+      icon: mdi:chart-line
+      unit_of_measurement: "L/h"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_volumen_monat') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/FA00"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Volumenstrom Jahr"
+      unique_id: isoft_volumen_jahr
+      icon: mdi:chart-line
+      unit_of_measurement: "L/h"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_volumen_jahr') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F300"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Salzverbrauch Tag"
+      unique_id: isoft_salz_tag
+      icon: mdi:chart-line
+      unit_of_measurement: "g"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_salz_tag') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F400"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Salzverbrauch Woche"
+      unique_id: isoft_salz_woche
+      icon: mdi:chart-line
+      unit_of_measurement: "g"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_salz_woche') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F500"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Salzverbrauch Monat"
+      unique_id: isoft_salz_monat
+      icon: mdi:chart-line
+      unit_of_measurement: "g"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_salz_monat') }}
+        {% endif %}
+
+- resource_template: "http://{{ states('input_text.isoft_ip') }}/api/rest/F600"
+  username: "admin"
+  password: "Connectivity"
+  scan_interval: 120
+  sensor:
+    - name: "i-soft Salzverbrauch Jahr"
+      unique_id: isoft_salz_jahr
+      icon: mdi:chart-line
+      unit_of_measurement: "g"
+      value_template: >-
+        {% if value_json is defined and value_json.data is defined %}
+          {% set hex = value_json.data %}
+          {{ (hex[2:4] ~ hex[0:2]) | int(base=16) }}
+        {% else %}
+          {{ states('sensor.isoft_salz_jahr') }}
+        {% endif %}
