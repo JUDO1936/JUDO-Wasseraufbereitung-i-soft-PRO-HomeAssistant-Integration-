@@ -1,0 +1,18 @@
+default_config:
+
+# Package-System
+# Bindet die judo_isoft_complete.yaml automatisch aus /config/packages/ ein
+homeassistant:
+  packages: !include_dir_named packages
+
+# REST API – nur Lesen
+# Die REST-Sensoren liegen in /config/rest.yaml
+rest: !include rest.yaml
+
+# Virtuelles Gerät verankern
+template:
+  - sensor:
+      - name: "i-soft PRO Status"
+        unique_id: isoft_pro_status_clean
+        state: "Online"
+        icon: mdi:water-softener
